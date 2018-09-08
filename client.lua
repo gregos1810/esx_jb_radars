@@ -205,6 +205,31 @@ AddEventHandler('esx_jb_radars:bombeRadar',function()
     if Config.Radars[radar].disable == false then
       TriggerServerEvent('esx_jb_radars:disable', radar)
       TriggerEvent('esx:showNotification','Vous avez taggé le radar')
+	---------animation spray from Deldu & little review by Tracid
+	local playerPed = GetPlayerPed(-1)
+        local coords    = GetEntityCoords(playerPed)
+	local lib = 'timetable@maid@cleaning_surface@base'
+	local anim = 'base'
+		
+	RequestAnimDict(lib)
+	while not HasAnimDictLoaded(lib) do
+	Citizen.Wait(1)
+	end
+	TaskPlayAnim(playerPed, lib, anim , 8.0, -8.0, -1, 51, 0, false, false, false)
+
+	  local boneIndex     = GetPedBoneIndex(playerPed, 57005) -- right hand : 57005 -- left hand : 18905
+	  local boneIndex2     = GetPedBoneIndex(playerPed, 18905) -- right hand : 57005 -- left hand : 18905
+	  local x,y,z = table.unpack(GetEntityCoords(playerPed))
+	  object = CreateObject(GetHashKey('prop_cs_spray_can'), x, y, z+0.2,  true,  true, true)
+	  object2 = CreateObject(GetHashKey('ng_proc_spraycan01b'), x, y, z+0.2,  true,  true, true)
+	  AttachEntityToEntity(object, playerPed, boneIndex, 0.12, 0.0, -0.015, 0.0, 0.0, 0.0, 1, 1, 0, 1, 0, 1)
+	  AttachEntityToEntity(object2, playerPed, boneIndex2, 0.09, -0.04, 0.035, -70.0, 175.0, -10.0, 1, 1, 0, 1, 0, 1)
+	  Citizen.CreateThread(function()
+	  Citizen.Wait(10000)
+	  ClearPedTasks(playerPed)
+	  DeleteObject(object)
+	  DeleteObject(object2)
+	end)
     else
       TriggerEvent('esx:showNotification','Le radar est deja taggé')
     end
